@@ -1,0 +1,23 @@
+Twi.start_server
+
+Twi.register("rishabh","password")
+Twi.register("anubhav","password")
+Twi.register("rocky","password")
+Twi.register("karan","password")
+Twi.register("aaru","password")
+Twi.register("pawas","password")
+
+Client.follow(:rishabh,:anubhav)
+Client.follow(:rishabh,:rocky)
+Client.follow(:rishabh,:karan)
+Client.follow(:anubhav,:aaru)
+Client.follow(:anubhav,:pawas)
+Client.follow(:pawas,:rishabh)
+
+
+Client.add_tweet("rishabh","hello well")
+Client.add_tweet("anubhav","take care")
+Client.add_tweet("rishabh","friendly reminder")
+Client.add_tweet("pawas","masti ki basti")
+
+Client.send_retweet("anubhav","hello well")

@@ -10,8 +10,7 @@ defmodule Client do
         GenServer.cast(followed_by, {:add_following, follow})
     end
 
-    def add_tweet(username) do
-        tweet = IO.gets "Enter the tweet"
+    def add_tweet(username,tweet) do
         GenServer.cast(username|>String.to_atom, {:add_tweet,tweet})
     end
 
@@ -23,8 +22,32 @@ defmodule Client do
         GenServer.call(username|> String.to_atom, :get_tweets)
     end
     
+    def send_retweet(username,tweet_text) do
+        GenServer.cast(username|> String.to_atom, {:send_retweet,tweet_text})
+    end
     
     # ---------- GenServer CallBacks --------------
+
+    def handle_cast({:send_retweet,tweet_text}, %User{username: username, followers: followers, homepage: homepage, tweets: tweets}= user) do
+        retweet_ = 
+            case Enum.member?(homepage,tweet_text) do
+                false ->
+                    IO.puts "Tweet not found !!! bitch"
+                    []
+                true ->
+                    IO.puts "Sending retweets"
+                    retweet = "retweet from #{username} "<>tweet_text
+                    Enum.each(followers, fn(x) ->
+                        GenServer.cast(x,{:add_retweet_to_followers,retweet}) end)
+                    [retweet]        
+            end
+        {:noreply, %User{user | tweets: (tweets ++ retweet_)}}
+    end
+
+    def handle_cast({:add_retweet_to_followers,retweet}, %User{homepage: homepage} = user) do
+        retweet_ = [retweet]
+        {:noreply, %User{user | homepage: (homepage ++ retweet_)}}
+    end
     def handle_call(:get_tweets, _from, tweets) do
         {:reply,tweets,tweets}
     end
@@ -38,10 +61,10 @@ defmodule Client do
         {:noreply, %User{user | tweets: (tweets ++ tweets_)}}   
     end
 
-    def handle_cast({:add_tweet_to_followers,tweet}, %User{tweets: tweets}=user) do
+    def handle_cast({:add_tweet_to_followers,tweet}, %User{homepage: homepage}=user) do
         tweets_ = [tweet]
         IO.puts "Tweet added to the followers"
-        {:noreply, %User{user | tweets: (tweets ++ tweets_)}}
+        {:noreply, %User{user | homepage: (homepage ++ tweets_)}}
     end
 
     def handle_call(:give_list, _from, followers) do
