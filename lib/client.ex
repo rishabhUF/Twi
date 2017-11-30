@@ -12,10 +12,7 @@ defmodule Client do
     end
 
     def add_tweet(username,tweet) do
-<<<<<<< HEAD
         ##tweet = IO.gets "Enter the tweet"
-=======
->>>>>>> 843627a56dfd1c60876f31af0620fea24ee2ec3a
         GenServer.cast(username|>String.to_atom, {:add_tweet,tweet})
     end
 
@@ -72,17 +69,10 @@ defmodule Client do
         {:noreply, {%User{user | tweets: (tweets ++ tweets_)}, %Server{server | hashtags: existing_hashtags}}}   
     end
 
-<<<<<<< HEAD
     def handle_cast({:add_tweet_to_followers,tweet}, {%User{homepage: homepage}=user,server}) do
         tweets_ = [tweet]
         IO.puts "Tweet added to the followers homepage"
         {:noreply, {%User{user | homepage: (homepage ++ tweets_)},server}}
-=======
-    def handle_cast({:add_tweet_to_followers,tweet}, %User{homepage: homepage}=user) do
-        tweets_ = [tweet]
-        IO.puts "Tweet added to the followers"
-        {:noreply, %User{user | homepage: (homepage ++ tweets_)}}
->>>>>>> 843627a56dfd1c60876f31af0620fea24ee2ec3a
     end
 
     def handle_call(:give_list, _from, followers) do

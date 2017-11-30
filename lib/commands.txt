@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ##Start Server
 Twi.start_server
 
@@ -25,28 +24,3 @@ Client.add_tweet("Glover","Namaste")
 Client.get_tweets("Rishabh")
 
 Client.get_tweets("Gaurav")
-=======
-Twi.start_server
-
-Twi.register("rishabh","password")
-Twi.register("anubhav","password")
-Twi.register("rocky","password")
-Twi.register("karan","password")
-Twi.register("aaru","password")
-Twi.register("pawas","password")
-
-Client.follow(:rishabh,:anubhav)
-Client.follow(:rishabh,:rocky)
-Client.follow(:rishabh,:karan)
-Client.follow(:anubhav,:aaru)
-Client.follow(:anubhav,:pawas)
-Client.follow(:pawas,:rishabh)
-
-
-Client.add_tweet("rishabh","hello well")
-Client.add_tweet("anubhav","take care")
-Client.add_tweet("rishabh","friendly reminder")
-Client.add_tweet("pawas","masti ki basti")
-
-Client.send_retweet("anubhav","hello well")
->>>>>>> 843627a56dfd1c60876f31af0620fea24ee2ec3a
