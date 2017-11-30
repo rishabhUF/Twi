@@ -32,10 +32,8 @@ defmodule Client do
     end
     
     # ---------- GenServer CallBacks --------------
-<<<<<<< HEAD
     def handle_call(:get_tweets, _from, {user,server}) do
         {:reply,{user,server},{user,server}}
-=======
 
     def handle_cast({:send_retweet,tweet_text}, %User{username: username, followers: followers, homepage: homepage, tweets: tweets}= user) do
         retweet_ = 
@@ -59,7 +57,6 @@ defmodule Client do
     end
     def handle_call(:get_tweets, _from, tweets) do
         {:reply,tweets,tweets}
->>>>>>> 843627a56dfd1c60876f31af0620fea24ee2ec3a
     end
 
     def handle_cast({:add_tweet,tweet}, {%User{tweets: tweets, followers: followers, online: online}=user, %Server{hashtags: existing_hashtags}=server}) do
