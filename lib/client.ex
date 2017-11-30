@@ -8,7 +8,7 @@ defmodule Client do
 
     # --------- FUNCTION DEFINATIONS ----------
     def follow(followed_by,follow) do
-        GenServer.cast(followed_by|>String.to_atom, {:add_following, follow})
+        GenServer.cast(followed_by, {:add_following, follow})
     end
 
     def add_tweet(username,tweet) do
