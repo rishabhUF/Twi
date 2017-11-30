@@ -12,6 +12,7 @@ defmodule Twi do
   def register(username,password \\"") do
     IO.puts "#{username}"
     user = %User{username: username |> String.to_atom, password: password, online: true}
+    ##server = %Server{users: users ++ user }
     GenServer.cast(Mainserver, {:register, user})
   end
 
@@ -22,7 +23,7 @@ defmodule Twi do
   def handle_cast({:register, %User{username: username}=user}, %Server{users: users} = server) do
     username_ =
     case Enum.member?(users,username) do
-      false -> GenServer.start_link(Client,user, name: username)
+      false -> GenServer.start_link(Client,{user,server}, name: username)
         IO.puts("User Account : #{username |> to_string} created ")
         [username]
       true -> 
