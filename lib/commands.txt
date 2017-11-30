@@ -1,11 +1,26 @@
+##Start Server
 Twi.start_server
+
+##Register User
 Twi.register("Gaurav","pass1")
 Twi.register("Rishabh","pass2")
 Twi.register("Donald","pass3")
 Twi.register("Glover","pass4")
 
 Client.follow("Gaurav","Rishabh")
+Client.follow("Glover","Rishabh")
 Client.follow("Gaurav","Donald")
 Client.follow("Rishabh","Donald")
 
-Client.add_tweet("Gaurav","Hello")
+Client.add_tweet("Rishabh","Hello #India")
+Client.add_tweet("Gaurav","Hi #world")
+Client.add_tweet("Donald","Bye #Duniya")
+Client.add_tweet("Glover","Namaste")
+
+Client.add_tweet("Donald","Bye")
+Client.add_tweet("Glover","Namaste")
+
+
+Client.get_tweets("Rishabh")
+
+Client.get_tweets("Gaurav")
