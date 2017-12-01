@@ -15,7 +15,7 @@ defmodule Twi do
     IO.puts "jjjjjjj"
     username_ =
     case Enum.member?(users,username) do
-      false -> GenServer.start_link(Client,user, name: username)
+      false -> GenServer.start_link(Client,{user,server}, name: username)
         IO.puts("User Account : #{username |> to_string} created ")
         [username]
       true -> 

@@ -1,23 +1,26 @@
+##Start Server
 Twi.start_server
 
-Twi.register("rishabh","password")
-Twi.register("anubhav","password")
-Twi.register("rocky","password")
-Twi.register("karan","password")
-Twi.register("aaru","password")
-Twi.register("pawas","password")
+##Register User
+Twi.register("Gaurav","pass1")
+Twi.register("Rishabh","pass2")
+Twi.register("Donald","pass3")
+Twi.register("Glover","pass4")
 
-Client.follow(:rishabh,:anubhav)
-Client.follow(:rishabh,:rocky)
-Client.follow(:rishabh,:karan)
-Client.follow(:anubhav,:aaru)
-Client.follow(:anubhav,:pawas)
-Client.follow(:pawas,:rishabh)
+Client.follow("Gaurav","Rishabh")
+Client.follow("Glover","Rishabh")
+Client.follow("Gaurav","Donald")
+Client.follow("Rishabh","Donald")
+
+Client.add_tweet("Rishabh","Hello #India")
+Client.add_tweet("Gaurav","Hi #world")
+Client.add_tweet("Donald","Bye #Duniya")
+Client.add_tweet("Glover","Namaste")
+
+Client.add_tweet("Donald","Bye")
+Client.add_tweet("Glover","Namaste")
 
 
-Client.add_tweet("rishabh","hello well")
-Client.add_tweet("anubhav","take care")
-Client.add_tweet("rishabh","friendly reminder")
-Client.add_tweet("pawas","masti ki basti")
+Client.get_tweets("Rishabh")
 
-Client.send_retweet("anubhav","hello well")
+Client.get_tweets("Gaurav")

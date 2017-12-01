@@ -9,8 +9,9 @@ defmodule Twi.User do
 
 defmodule Twi.Server do
     defstruct users: nil,
-              hashtags: %{} ## map of hashtag -> list[tweet]
+              hashtags: nil ## map of hashtag -> list[tweet]
     end
+     
 
 # defmodule Twi.Tweet do
 #     defstruct tweet_id: nil,

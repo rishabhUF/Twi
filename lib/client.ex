@@ -1,8 +1,9 @@
 defmodule Client do
     alias Twi.User
+    alias Twi.Server
   
-    def init(user) do
-      {:ok,user}
+    def init({user,server}) do
+      {:ok,{user,server}}
     end
 
     # --------- FUNCTION DEFINATIONS ----------
@@ -14,10 +15,11 @@ defmodule Client do
     end
 
     def follow(followed_by,follow) do
-        GenServer.cast(followed_by, {:add_following, follow})
+        GenServer.cast(follow|>String.to_atom, {:add_following, followed_by|>String.to_atom})
     end
 
     def add_tweet(username,tweet) do
+        ##tweet = IO.gets "Enter the tweet"
         GenServer.cast(username|>String.to_atom, {:add_tweet,tweet})
     end
 
@@ -34,6 +36,8 @@ defmodule Client do
     end
     
     # ---------- GenServer CallBacks --------------
+    def handle_call(:get_tweets, _from, {user,server}) do
+        {:reply,{user,server},{user,server}}
 
     def handle_cast({:send_retweet,tweet_text}, %User{username: username, followers: followers, homepage: homepage, tweets: tweets}= user) do
         retweet_ = 
@@ -59,26 +63,30 @@ defmodule Client do
         {:reply,tweets,tweets}
     end
 
-    def handle_cast({:add_tweet,tweet}, %User{tweets: tweets, followers: followers}=user) do
+    def handle_cast({:add_tweet,tweet}, {%User{tweets: tweets, followers: followers, online: online}=user, %Server{hashtags: existing_hashtags}=server}) do
         tweets_= [tweet]
         IO.puts "Tweet is uploaded"
+         if(String.contains?tweet,"#") do
+             hashtags_ =  Regex.scan(~r/\B#[a-zA-Z0-9_]+/, tweet)|> Enum.concat
+             Map.put(existing_hashtags,tweet,hashtags_)
+         end
         Enum.each(followers, fn(x) ->
             GenServer.cast(x,{:add_tweet_to_followers,tweet}) 
         end)
-        {:noreply, %User{user | tweets: (tweets ++ tweets_)}}   
+        {:noreply, {%User{user | tweets: (tweets ++ tweets_)}, %Server{server | hashtags: existing_hashtags}}}   
     end
 
-    def handle_cast({:add_tweet_to_followers,tweet}, %User{homepage: homepage}=user) do
+    def handle_cast({:add_tweet_to_followers,tweet}, {%User{homepage: homepage}=user,server}) do
         tweets_ = [tweet]
-        IO.puts "Tweet added to the followers"
-        {:noreply, %User{user | homepage: (homepage ++ tweets_)}}
+        IO.puts "Tweet added to the followers homepage"
+        {:noreply, {%User{user | homepage: (homepage ++ tweets_)},server}}
     end
 
     def handle_call(:give_list, _from, followers) do
         {:reply,followers,followers}
     end
 
-    def handle_cast({:add_following, to_follow}, %User{followers: followers}=user) do
+    def handle_cast({:add_following, to_follow}, {%User{followers: followers}=user,%Server{hashtags: existing_hashtags}=server}) do
         follow_ = 
         case Process.whereis(to_follow) do
             nil -> 
@@ -87,7 +95,9 @@ defmodule Client do
             _pid ->
                 IO.puts "User #{to_follow} is followed"
                 [to_follow]    
+                
         end
-        {:noreply, %User{user | followers: (followers ++ follow_)}}
+       # IO.puts "User is in list of followed"
+        {:noreply, {%User{user | followers: (followers ++ follow_)},server}}
     end
 end
