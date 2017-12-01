@@ -24,3 +24,8 @@ Client.add_tweet("Glover","Namaste")
 Client.get_tweets("Rishabh")
 
 Client.get_tweets("Gaurav")
+
+
+________________________________________________
+
+Main.main()

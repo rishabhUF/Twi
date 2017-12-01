@@ -38,7 +38,7 @@ defmodule Client do
     # ---------- GenServer CallBacks --------------
     def handle_call(:get_tweets, _from, {user,server}) do
         {:reply,{user,server},{user,server}}
-
+    end    
     def handle_cast({:send_retweet,tweet_text}, %User{username: username, followers: followers, homepage: homepage, tweets: tweets}= user) do
         retweet_ = 
             case Enum.member?(homepage,tweet_text) do
