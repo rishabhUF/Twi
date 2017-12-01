@@ -3,23 +3,16 @@ defmodule Twi do
   alias Twi.User
   alias Twi.Server
 
-  ##take user_name and password from the user and call register function.
-  ## start the main server with user and hashtags
-  def start_server do
-    GenServer.start_link(__MODULE__, %Server{users: [], hashtags: %{}}, name: Mainserver)
-  end
-
-  def register(username,password \\"") do
-    IO.puts "#{username}"
-    user = %User{username: username |> String.to_atom, password: password, online: true}
-    GenServer.cast(Mainserver, {:register, user})
-  end
-
   def give do
     GenServer.call(Mainserver, :give)
   end
 
+  ### --- CALL BACK FUNCTION RECEIVED FROM THE CLIENT ON SERVER MODULE --- ##
+
+
+  ## handle call for register
   def handle_cast({:register, %User{username: username}=user}, %Server{users: users} = server) do
+    IO.puts "jjjjjjj"
     username_ =
     case Enum.member?(users,username) do
       false -> GenServer.start_link(Client,user, name: username)
@@ -32,9 +25,16 @@ defmodule Twi do
   {:noreply, %Server{server | users: (users ++ username_)}}
   end
 
-  def handle_call(:give, _from,users) do
+  ## handle call to print the users
+  # def handle_call(:give, _from,users) do
     
-    {:reply,users,users}
+  #   {:reply,users,users}
+  # end
+
+  def handle_call(:test_function,from,user) do
+    IO.puts "here in test function from twitter client"
+    {:reply, true,user}
   end
 
+  
 end

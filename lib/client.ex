@@ -6,6 +6,13 @@ defmodule Client do
     end
 
     # --------- FUNCTION DEFINATIONS ----------
+    ## FUNCTION TO REGISTER THE ACCOUNT ##
+    def register(username,password \\"") do
+        IO.puts "#{username}"
+        user = %User{username: username |> String.to_atom, password: password, online: true}
+        GenServer.cast(Mainserver, {:register, user})
+    end
+
     def follow(followed_by,follow) do
         GenServer.cast(followed_by, {:add_following, follow})
     end
