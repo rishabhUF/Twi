@@ -2,8 +2,8 @@ defmodule Client do
     alias Twi.User
     alias Twi.Server
   
-    def init({user,server}) do
-      {:ok,{user,server}}
+    def init(%User{username: username,password: password}=user) do
+      {:ok,user}
     end
 
     # --------- FUNCTION DEFINATIONS ----------
@@ -36,6 +36,23 @@ defmodule Client do
     end
     
     # ---------- GenServer CallBacks --------------
+
+    def handle_call({:login_client,password},from,%User{password: stored_password, online: online}=user) do
+        if(password == stored_password) do
+            if (online == false) do
+                IO.puts "Valid password"
+                user_ = %User{user | online: true}
+                {:reply,true,user_}
+            else
+                IO.puts "User Already logged in"  
+                {:reply,false,user}   
+            end 
+        else
+            IO.puts "Invalid password"
+            {:reply,false,user}    
+        end
+    end
+
     def handle_call(:get_tweets, _from, {user,server}) do
         {:reply,{user,server},{user,server}}
     end    
