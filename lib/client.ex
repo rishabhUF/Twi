@@ -18,11 +18,6 @@ defmodule Client do
         GenServer.cast(follow|>String.to_atom, {:add_following, followed_by|>String.to_atom})
     end
 
-    # def add_tweet(username,tweet) do
-    #     ##tweet = IO.gets "Enter the tweet"
-    #     GenServer.cast(username|>String.to_atom, {:add_tweet,tweet})
-    # end
-
     def give_list(list) do
         GenServer.call(list|> String.to_atom, :give_list)
     end
@@ -53,9 +48,9 @@ defmodule Client do
         end
     end
 
-    def handle_call(:get_tweets, _from, user) do
-        {:reply,user,user}
-    end    
+    # def handle_call(:get_tweets, _from, user) do
+    #     {:reply,user,user}
+    # end    
     
     # def handle_cast({:send_retweet,tweet_text}, %User{username: username, followers: followers, homepage: homepage, tweets: tweets}= user) do
     #     retweet_ = 
@@ -127,10 +122,15 @@ defmodule Client do
 
 
     def handle_call({:client_follow, follow},_from,%User{username: username, followers: followers_}=user) do
-        IO.inspect follow    
-        IO.puts "User #{follow} is followed"
-        follows_ = [follow]
-        user_ = %User{user | followers: (followers_ ++ follows_)}
-        {:reply,true,user_}                
+        IO.inspect follow 
+        if Enum.member?(followers_,follow) do
+            {:reply,false,user}
+        else
+            IO.puts "User #{follow} is followed"
+            follows_ = [follow]
+            user_ = %User{user | followers: (followers_ ++ follows_)}
+            {:reply,true,user_}  
+        end   
+                      
     end
 end
