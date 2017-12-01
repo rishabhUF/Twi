@@ -57,21 +57,21 @@ defmodule Client do
         {:reply,user,user}
     end    
     
-    def handle_cast({:send_retweet,tweet_text}, %User{username: username, followers: followers, homepage: homepage, tweets: tweets}= user) do
-        retweet_ = 
-            case Enum.member?(homepage,tweet_text) do
-                false ->
-                    IO.puts "Tweet not found !!! bitch"
-                    []
-                true ->
-                    IO.puts "Sending retweets"
-                    retweet = "retweet from #{username} "<>tweet_text
-                    Enum.each(followers, fn(x) ->
-                        GenServer.cast(x,{:add_retweet_to_followers,retweet}) end)
-                    [retweet]        
-            end
-        {:noreply, %User{user | tweets: (tweets ++ retweet_)}}
-    end
+    # def handle_cast({:send_retweet,tweet_text}, %User{username: username, followers: followers, homepage: homepage, tweets: tweets}= user) do
+    #     retweet_ = 
+    #         case Enum.member?(homepage,tweet_text) do
+    #             false ->
+    #                 IO.puts "Tweet not found !!! bitch"
+    #                 []
+    #             true ->
+    #                 IO.puts "Sending retweets"
+    #                 retweet = "retweet from #{username} "<>tweet_text
+    #                 Enum.each(followers, fn(x) ->
+    #                     GenServer.cast(x,{:add_retweet_to_followers,retweet}) end)
+    #                 [retweet]        
+    #         end
+    #     {:noreply, %User{user | tweets: (tweets ++ retweet_)}}
+    # end
 
     def handle_cast({:add_retweet_to_followers,retweet}, %User{homepage: homepage} = user) do
         retweet_ = [retweet]
@@ -92,7 +92,9 @@ defmodule Client do
             end)
             # Map.put(existing_hashtags,tweet,hashtags_)
          end
+         IO.puts "hello world"
         Enum.each(followers, fn(x) ->
+            IO.puts x
             GenServer.cast(:"#{x}",{:add_tweet_to_followers,tweet}) 
         end)
         {:noreply, %User{user | tweets: (tweets ++ tweets_)}}   
@@ -108,20 +110,20 @@ defmodule Client do
         {:reply,followers,followers}
     end
 
-    def handle_cast({:add_following, to_follow}, {%User{followers: followers}=user,%Server{hashtags: existing_hashtags}=server}) do
-        follow_ = 
-        case Process.whereis(to_follow) do
-            nil -> 
-                IO.puts "User invalid"
-                []
-            _pid ->
-                IO.puts "User #{to_follow} is followed"
-                [to_follow]    
+    # def handle_cast({:add_following, to_follow}, {%User{followers: followers}=user,%Server{hashtags: existing_hashtags}=server}) do
+    #     follow_ = 
+    #     case Process.whereis(to_follow) do
+    #         nil -> 
+    #             IO.puts "User invalid"
+    #             []
+    #         _pid ->
+    #             IO.puts "User #{to_follow} is followed"
+    #             [to_follow]    
                 
-        end
-       # IO.puts "User is in list of followed"
-        {:noreply, {%User{user | followers: (followers ++ follow_)},server}}
-    end
+    #     end
+    #    # IO.puts "User is in list of followed"
+    #     {:noreply, {%User{user | followers: (followers ++ follow_)},server}}
+    # end
 
 
     def handle_call({:client_follow, follow},_from,%User{username: username, followers: followers_}=user) do
