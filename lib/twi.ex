@@ -25,12 +25,52 @@ defmodule Twi do
   {:noreply, %Server{server | users: (users ++ username_)}}
   end
 
+  def handle_cast({:add_hashtags,newHashtag,tweet}, %Server{hashtags: existingHashtags} = server) do
+   IO.puts("Reached Hashtag main")
+    case Enum.member?(existingHashtags,newHashtag) do
+      false -> 
+        IO.puts("Reached New Hashtag")
+        Map.put(existingHashtags,newHashtag,[tweet])
+      true -> 
+        IO.puts("Reached Hashtag old")
+        IO.inspect existingHashtags
+        temp = Map.get(existingHashtags,newHashtag)
+        temp_=[temp]++[tweet]
+        Map.put(existingHashtags,newHashtag,temp_)
+    end
+  {:noreply, %Server{server | hashtags: existingHashtags}}
+  end
+
+
   def handle_call({:login,username,password}, _from, state) do
     case Process.whereis(:"#{username}") do
       nil ->
         IO.puts "Please enter the correct UserName. Username not found in database"
       _ ->
        reply =  GenServer.call(:"#{username}",{:login_client,password})  
+    end
+    {:reply,reply,state}
+  end
+
+  def handle_call({:find_add_tweet,username,tweet}, _from, state) do
+    case Process.whereis(:"#{username}") do
+      nil ->
+        IO.puts "Please enter the correct UserName. Username not found in database"
+      _ ->
+        # IO.puts "hello"
+       reply =  GenServer.cast(:"#{username}",{:add_tweet,tweet})  
+    end
+    {:reply,reply,state}
+  end
+
+  def handle_call({:follow_user,username,to_follow},_from,state) do
+    IO.puts "Inside follow"
+    case Process.whereis(:"#{to_follow}") do
+      nil ->
+        IO.puts "Please enter the correct UserName. Username not found in database"
+      _ ->
+        IO.puts "Genserver call called from server_client"
+        reply = GenServer.call(:"#{to_follow}",{:client_follow, username})
     end
     {:reply,reply,state}
   end
