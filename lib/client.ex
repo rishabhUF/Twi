@@ -1,6 +1,6 @@
 defmodule Client do
-    alias Twi.User
-    alias Twi.Server
+    alias Main.User
+    alias Main.Server
   
     def init(%User{username: username,password: password}=user) do
       {:ok,user}
@@ -83,11 +83,11 @@ defmodule Client do
         case (onlineStatus) do
             false ->
                 # In case user is offline, add to cached copy of homepage
-                IO.puts "Tweet added to the followers cache homepage"
+                # IO.puts "Tweet added to the followers cache homepage"
                 {:noreply, %User{user | cacheHomepage: (existingCacheHomepage ++ tweets_)}}
             true->
                   # In case user is online, add to actual homepage
-                IO.puts "Tweet added to the followers homepage"
+                # IO.puts "Tweet added to the followers homepage"
                 {:noreply, %User{user | homepage: (existingHomepage ++ tweets_)}}
         end     
     end

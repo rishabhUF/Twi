@@ -1,7 +1,7 @@
 defmodule Twi do
   use GenServer
-  alias Twi.User
-  alias Twi.Server
+  alias Main.User
+  alias Main.Server
 
   def give do
     GenServer.call(Mainserver, :give)
@@ -11,7 +11,7 @@ defmodule Twi do
 
 
   ## handle call for register
-  def handle_cast({:register, %User{username: username, password: password}=user}, %Server{users: users} = server) do
+  def handle_cast({:register, %User{username: username}=user}, %Server{users: users} = server) do
     # IO.puts "Registration called"
     username_ =
     case Enum.member?(users,username) do
@@ -32,13 +32,13 @@ defmodule Twi do
     # 7 HASHTAGS
   def handle_cast({:add_hashtags,newHashtag,tweet}, %Server{hashtags: existingHashtags} = server) do
   #  IO.puts("Reached Hashtag main")
-   case Map.has_key?(existingHashtags,newHashtag) do
+  newMap_= case Map.has_key?(existingHashtags,newHashtag) do
        false -> 
         # IO.puts("Reached New Hashtag")
         # IO.inspect existingHashtags
         # IO.inspect newHashtag
         # IO.inspect tweet
-        newMap_= Map.put_new(existingHashtags,newHashtag,[tweet])
+        Map.put_new(existingHashtags,newHashtag,[tweet])
 
       true -> 
         # IO.puts("Reached Hashtag old")
@@ -46,7 +46,7 @@ defmodule Twi do
         temp = Map.get(existingHashtags,newHashtag)
         IO.inspect temp
         temp_=temp++[tweet]
-        newMap_=Map.put(existingHashtags,newHashtag,temp_)
+        Map.put(existingHashtags,newHashtag,temp_)
         
     end
     # IO.inspect newMap_
@@ -132,17 +132,34 @@ defmodule Twi do
     #   _ ->
     #    reply =  GenServer.call(:"#{username}",{:get_hashtags,password})  
     # end
-    {:reply,existingHashtags,server}
+    case Map.has_key?(existingHashtags,hashtag) do
+      false -> 
+       # IO.puts("Reached New Hashtag")
+       # IO.inspect existingHashtags
+       # IO.inspect newHashtag
+       # IO.inspect tweet
+      #  newMap_= Map.put_new(existingHashtags,newHashtag,[tweet])
+       {:reply,"No matching hashtags found.",server}
+     true -> 
+       # IO.puts("Reached Hashtag old")
+       #IO.inspect existingHashtags
+       temp = Map.get(existingHashtags,hashtag)
+       {:reply,temp,server}
+   end
+
+   
   end
 
-  def handle_call({:fetch_userHomepage,username}, _from, state) do
+  def handle_call({:fetch_userHomepage,username}, _from, server) do
     case Process.whereis(:"#{username}") do
       nil ->
         IO.puts "Please enter the correct UserName. Username not found in database"
+        {:reply,"Please enter the correct UserName. Username not found in database",server}
       _ ->
-       reply =  GenServer.call(:"#{username}",:get_userHomepage)  
+       reply_ =  GenServer.call(:"#{username}",:get_userHomepage)  
+       {:reply,reply_,server}
     end
-    {:reply,reply,state}
+    
   end
 
 

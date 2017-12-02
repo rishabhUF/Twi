@@ -1,16 +1,16 @@
 defmodule Main do
     use GenServer
-    alias Twi.User
-    alias Twi.Server
+    alias Main.User
+    alias Main.Server
 
     #### connect to the client module
     def main(args \\ []) do
         ip = get_client_ip_address()
         IO.inspect ip
-        IO.puts "ip fetched"
+        # IO.puts "ip fetched"
         Node.start(:"rishabh@#{ip}")
         Node.set_cookie(:"rishabh@#{ip}",:"twiserver")
-        IO.puts "node chal gai"
+        # IO.puts "node chal gai"
         {:ok,pid}=GenServer.start_link(Twi, %Server{users: [], hashtags: %{}}, name: Mainserver)
         :global.sync()
         :global.register_name(:mainserver, pid)
