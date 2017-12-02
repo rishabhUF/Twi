@@ -68,7 +68,7 @@ defmodule Twi do
   def handle_call({:logout,username}, _from, state) do
     case Process.whereis(:"#{username}") do
       nil ->
-        # IO.puts "Please enter the correct UserName. Username not found in database"
+        IO.puts "Please enter the correct UserName. Username not found in database"
       _ ->
        reply =  GenServer.call(:"#{username}",:logout_client)  
     end
