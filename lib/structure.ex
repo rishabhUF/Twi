@@ -9,6 +9,7 @@ defmodule Twi.User do
 
 defmodule Twi.Server do
     defstruct users: nil,
+            mentions: %{},
               hashtags: %{} ## map of hashtag -> list[tweet]
     end
      

@@ -26,21 +26,53 @@ defmodule Twi do
   end
 
   def handle_cast({:add_hashtags,newHashtag,tweet}, %Server{hashtags: existingHashtags} = server) do
-   IO.puts("Reached Hashtag main")
-    case Enum.member?(existingHashtags,newHashtag) do
-      false -> 
-        IO.puts("Reached New Hashtag")
-        Map.put(existingHashtags,newHashtag,[tweet])
-      true -> 
-        IO.puts("Reached Hashtag old")
-        IO.inspect existingHashtags
-        temp = Map.get(existingHashtags,newHashtag)
-        temp_=[temp]++[tweet]
-        Map.put(existingHashtags,newHashtag,temp_)
-    end
-  {:noreply, %Server{server | hashtags: existingHashtags}}
-  end
+  #  IO.puts("Reached Hashtag main")
+   case Map.has_key?(existingHashtags,newHashtag) do
+       false -> 
+        # IO.puts("Reached New Hashtag")
+        # IO.inspect existingHashtags
+        # IO.inspect newHashtag
+        # IO.inspect tweet
+        #put_in(server, [:hashtags, newHashtag], tweet)
+        # put_in server()
+        newMap_= Map.put_new(existingHashtags,newHashtag,[tweet])
 
+      true -> 
+        # IO.puts("Reached Hashtag old")
+        #IO.inspect existingHashtags
+        temp = Map.get(existingHashtags,newHashtag)
+        IO.inspect temp
+        temp_=temp++[tweet]
+        newMap_=Map.put(existingHashtags,newHashtag,temp_)
+        
+    end
+    # IO.inspect newMap_
+  {:noreply, %Server{server| hashtags: newMap_}}
+  end
+  def handle_cast({:add_mentions,username,tweet}, %Server{mentions: existingMentions} = server) do
+     IO.puts("Reached Mentions main")
+     case Map.has_key?(existingMentions,username) do
+         false -> 
+          IO.puts("Reached New Mention")
+          # IO.inspect existingHashtags
+          # IO.inspect newHashtag
+          # IO.inspect tweet
+          #put_in(server, [:hashtags, newHashtag], tweet)
+          # put_in server()
+          newMap_= Map.put_new(existingMentions,username,[tweet])
+  
+        true -> 
+          IO.puts("Reached old Mention")
+          #IO.inspect existingHashtags
+          temp = Map.get(existingMentions,username)
+          # IO.inspect temp
+          temp_=temp++[tweet]
+          newMap_=Map.put(existingMentions,username,temp_)
+          
+      end
+      IO.inspect newMap_
+    {:noreply, %Server{server| mentions: newMap_}}
+    end
 
   def handle_call({:login,username,password}, _from, state) do
     case Process.whereis(:"#{username}") do
@@ -64,13 +96,25 @@ defmodule Twi do
   end
 
   def handle_call({:follow_user,username,to_follow},_from,state) do
-    IO.puts "Inside follow"
+    # IO.puts "Inside follow"
     case Process.whereis(:"#{to_follow}") do
       nil ->
         IO.puts "Please enter the correct UserName. Username not found in database"
       _ ->
-        IO.puts "Genserver call called from server_client"
+        # IO.puts "Genserver call called from server_client"
         reply = GenServer.call(:"#{to_follow}",{:client_follow, username})
+    end
+    {:reply,reply,state}
+  end
+
+  def handle_call({:retweet,username,tweet},_from,state) do
+    IO.puts "Inside Retweet"
+    case Process.whereis(:"#{username}") do
+      nil ->
+        IO.puts "Please enter the correct UserName. Username not found in database"
+      _ ->
+        IO.puts "Genserver call called from server_client"
+        reply = GenServer.cast(:"#{username}",{:send_retweet, tweet})
     end
     {:reply,reply,state}
   end
