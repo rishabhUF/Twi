@@ -4,15 +4,18 @@ defmodule Twi.User do
               followers: [],
               tweets: [],
               online: false,
-              homepage: []
+              cacheHomepage: [],
+              homepage: [],
+              mentions: [],
+              cacheMention: []
     end
 
 defmodule Twi.Server do
     defstruct users: nil,
-            mentions: %{},
               hashtags: %{} ## map of hashtag -> list[tweet]
     end
-     
+   
+
 
 # defmodule Twi.Tweet do
 #     defstruct tweet_id: nil,
