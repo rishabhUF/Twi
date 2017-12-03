@@ -8,7 +8,7 @@ defmodule Twi.User do
               homepage: [],
               mentions: [],
               cacheMention: []
-    end
+    end 
 
 defmodule Twi.Server do
     defstruct users: nil,

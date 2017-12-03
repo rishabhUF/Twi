@@ -13,8 +13,6 @@ defmodule Client do
     # 
     # 1 LOGIN   
     def handle_call({:login_client,password},from,%User{password: stored_password, online: online,cacheHomepage: existingCacheHomepage,homepage: existingHomepage,mentions: existingMentions,cacheMention: existingCacheMention}=user) do
-
-        
         if(password == stored_password) do
             if (online == false) do
                 # IO.puts "Valid password"

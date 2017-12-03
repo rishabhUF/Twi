@@ -16,7 +16,7 @@ defmodule Main do
         :global.register_name(:mainserver, pid)
         pid
     end
-
+ 
 
     ##this function finds the ip address of the client machine
     def get_client_ip_address() do

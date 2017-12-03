@@ -2,7 +2,7 @@ defmodule Twi do
   use GenServer
   alias Twi.User
   alias Twi.Server
-
+ 
   def give do
     GenServer.call(Mainserver, :give)
   end
