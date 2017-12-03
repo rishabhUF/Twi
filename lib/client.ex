@@ -1,6 +1,6 @@
 defmodule Client do
-    alias Main.User
-    alias Main.Server
+    alias Twi.User
+    alias Twi.Server
   
     def init(%User{username: username,password: password}=user) do
       {:ok,user}

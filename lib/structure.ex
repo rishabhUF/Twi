@@ -1,4 +1,4 @@
-defmodule Main.User do
+defmodule Twi.User do
     defstruct username: nil,
               password: nil,
               followers: [],
@@ -10,7 +10,7 @@ defmodule Main.User do
               cacheMention: []
     end 
 
-defmodule Main.Server do
+defmodule Twi.Server do
     defstruct users: nil,
               hashtags: %{} ## map of hashtag -> list[tweet]
     end

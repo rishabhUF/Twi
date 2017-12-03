@@ -1,7 +1,7 @@
 defmodule Main do
     use GenServer
-    alias Main.User
-    alias Main.Server
+    alias Twi.User
+    alias Twi.Server
 
     #### connect to the client module
     def main(args \\ []) do
