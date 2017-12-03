@@ -15,6 +15,7 @@ defmodule Main do
         :global.sync()
         :global.register_name(:mainserver, pid)
         pid
+        Process.sleep(:infinity)
     end
  
 

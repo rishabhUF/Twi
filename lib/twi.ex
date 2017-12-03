@@ -44,7 +44,7 @@ defmodule Twi do
         # IO.puts("Reached Hashtag old")
         #IO.inspect existingHashtags
         temp = Map.get(existingHashtags,newHashtag)
-        IO.inspect temp
+        # IO.inspect temp
         temp_=temp++[tweet]
         Map.put(existingHashtags,newHashtag,temp_)
         
